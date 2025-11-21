@@ -13,7 +13,7 @@ const profileRoutes = require("./routes/profileRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const gamifyRoutes = require("./routes/gamifyRoutes");
 const aiRoutes = require("./routes/aiRoutes");
-const sosRoutes = require("./routes/sosRoutes"); // ✅ FIXED (was 'import' before)
+const sosRoutes = require("./routes/sosRoutes");
 
 const app = express();
 
@@ -34,16 +34,13 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/gamify", gamifyRoutes);
 app.use("/api/ai", aiRoutes);
-app.use("/api/sos", sosRoutes); // ✅ added SOS route
+app.use("/api/sos", sosRoutes);
 
-// Health check
+// Health route
 app.get("/", (req, res) => {
   res.send("🌿 WellNest Backend is running properly!");
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// Start server — RENDER FIX
+const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-app.get("/", (req, res) => {
-  res.send("WellNest Backend Running");
-});
