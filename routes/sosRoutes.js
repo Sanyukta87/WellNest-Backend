@@ -2,7 +2,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
-const User = require("../models/user"); // ✅ lowercase 'user' file name
+const User = require("../models/User"); // ✅ lowercase 'user' file name
 
 // ✅ POST /api/sos/send
 router.post("/send", authMiddleware, async (req, res) => {

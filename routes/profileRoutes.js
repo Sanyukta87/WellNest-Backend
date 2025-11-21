@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
-const User = require("../models/user");
+const User = require("../models/User");
 
 // ✅ Update user profile
 router.put("/update", authMiddleware, async (req, res) => {
