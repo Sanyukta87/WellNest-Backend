@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const auth = require("../middleware/authMiddleware");
-const Mood = require("../models/mood");
+const Mood = require("../models/Mood");
 
 // Add a mood
 router.post("/add", auth, async (req, res) => {
