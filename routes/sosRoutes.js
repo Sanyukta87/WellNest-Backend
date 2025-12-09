@@ -1,43 +1,48 @@
 const express = require("express");
-const nodemailer = require("nodemailer");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/User");
+const twilio = require("twilio");
+require("dotenv").config();
 
-// POST /api/sos/send
-router.post("/send", authMiddleware, async (req, res) => {
+// Twilio Client
+const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH);
+
+// POST /api/sos/call
+router.post("/call", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    if (!user.emergencyContact) {
-      return res.status(400).json({ message: "No emergency contact saved." });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Configure mail transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
+    if (!user.emergencyContact) {
+      return res.status(400).json({
+        message: "No emergency contact saved in profile.",
+      });
+    }
+
+    // Twilio call message URL
+    const twimlUrl = "http://demo.twilio.com/docs/voice.xml";
+
+    // Trigger phone call
+    const call = await client.calls.create({
+      url: twimlUrl,
+      to: user.emergencyContact, // phone number to call
+      from: process.env.TWILIO_PHONE, // your Twilio phone number
     });
 
-    // Email content
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: user.emergencyContact,
-      subject: "🚨 Emergency Alert from WellNest",
-      text: `This is an SOS alert from ${user.name || "a WellNest user"}.
-      
-User Email: ${user.email}
-Message: ${req.body.message || "The user has triggered an SOS alert. Please reach out immediately."}`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: "SOS alert sent successfully!" });
+    return res.json({
+      success: true,
+      message: `SOS CALL initiated to ${user.emergencyContact}!`,
+      call,
+    });
   } catch (error) {
-    console.error("Error sending SOS:", error);
-    res.status(500).json({ message: "Failed to send SOS alert." });
+    console.error("❌ Error making SOS Call:", error);
+    return res.status(500).json({
+      message: "Failed to make SOS call.",
+    });
   }
 });
 

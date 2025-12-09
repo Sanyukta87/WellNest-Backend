@@ -1,21 +1,31 @@
 const mongoose = require("mongoose");
 
-// Define Mood Schema
-const moodSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const moodSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    mood: {
+      type: String,
+      required: true,
+      enum: ["Happy", "Sad", "Anxious", "Angry", "Neutral", "Calm", "Stressed"],
+    },
+    emoji: {
+      type: String,
+      default: "",
+    },
+    note: {
+      type: String,
+      default: "",
+    },
   },
-  mood: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true, // ✅ adds createdAt and updatedAt automatically
+  }
+);
 
-// Export the model
-module.exports = mongoose.model("Mood", moodSchema);
+// Prevent OverwriteModelError in development
+module.exports = mongoose.models.Mood || mongoose.model("Mood", moodSchema);
+
