@@ -23,7 +23,8 @@
     "morgan": "^1.10.1",
     "nodemailer": "^7.0.10",
     "openai": "^6.8.1",
-    "sentiment": "^5.0.2"
+    "sentiment": "^5.0.2",
+    "twilio": "^5.10.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
